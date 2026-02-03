@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "Bash(python3:*)",
+      "Bash(rsvg-convert:*)",
+      "Bash(npm install)",
+      "Bash(npm run build:*)",
+      "Bash(source ~/.nvm/nvm.sh)",
+      "Bash(nvm use:*)",
+      "Bash(node --version:*)",
+      "Bash(npm install:*)"
+    ]
+  }
+}
