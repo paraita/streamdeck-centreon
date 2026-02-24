@@ -28,6 +28,9 @@ export class DualAlert extends SingletonAction<DualAlertSettings> {
 		const { settings } = ev.payload;
 		const contextId = ev.action.id;
 
+		logger.info(
+			`WillAppear context=${contextId} host="${settings.hostFilter || ""}" service="${settings.serviceFilter || ""}"`,
+		);
 		await this.updateDisplay(ev, settings);
 		this.startPolling(contextId, ev, settings);
 	}
@@ -40,6 +43,9 @@ export class DualAlert extends SingletonAction<DualAlertSettings> {
 		const { settings } = ev.payload;
 		const contextId = ev.action.id;
 
+		logger.info(
+			`DidReceiveSettings context=${contextId} host="${settings.hostFilter || ""}" service="${settings.serviceFilter || ""}"`,
+		);
 		this.stopPolling(contextId);
 		await this.updateDisplay(ev, settings);
 		this.startPolling(contextId, ev, settings);
@@ -77,7 +83,13 @@ export class DualAlert extends SingletonAction<DualAlertSettings> {
 	}
 
 	private async updateDisplay(
-		ev: { action: { setTitle: (title: string) => Promise<void>; setImage: (image: string) => Promise<void> } },
+		ev: {
+			action: {
+				id?: string;
+				setTitle: (title: string) => Promise<void>;
+				setImage: (image: string) => Promise<void>;
+			};
+		},
 		settings: DualAlertSettings,
 	): Promise<void> {
 		if (!settings.url || !settings.username || !settings.password) {

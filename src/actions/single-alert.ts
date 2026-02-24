@@ -29,6 +29,9 @@ export class SingleAlert extends SingletonAction<SingleAlertSettings> {
 		const { settings } = ev.payload;
 		const contextId = ev.action.id;
 
+		logger.info(
+			`WillAppear context=${contextId} host="${settings.hostFilter || ""}" service="${settings.serviceFilter || ""}" severity="${settings.severity || "critical"}"`,
+		);
 		await this.updateDisplay(ev, settings);
 		this.startPolling(contextId, ev, settings);
 	}
@@ -41,6 +44,9 @@ export class SingleAlert extends SingletonAction<SingleAlertSettings> {
 		const { settings } = ev.payload;
 		const contextId = ev.action.id;
 
+		logger.info(
+			`DidReceiveSettings context=${contextId} host="${settings.hostFilter || ""}" service="${settings.serviceFilter || ""}" severity="${settings.severity || "critical"}"`,
+		);
 		this.stopPolling(contextId);
 		await this.updateDisplay(ev, settings);
 		this.startPolling(contextId, ev, settings);
@@ -79,7 +85,13 @@ export class SingleAlert extends SingletonAction<SingleAlertSettings> {
 	}
 
 	private async updateDisplay(
-		ev: { action: { setTitle: (title: string) => Promise<void>; setImage: (image: string) => Promise<void> } },
+		ev: {
+			action: {
+				id?: string;
+				setTitle: (title: string) => Promise<void>;
+				setImage: (image: string) => Promise<void>;
+			};
+		},
 		settings: SingleAlertSettings,
 	): Promise<void> {
 		if (!settings.url || !settings.username || !settings.password) {
